@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FASE0 Sandbox Checkout Harness</title>
+<script src="https://cdn.paddle.com/paddle-js/v1/paddle.js"></script>
+</head>
+<body>
+<h1>FASE0 sandbox checkout harness</h1>
+<p>Transaction: <span id="txnLabel">none</span></p>
+<button id="openBtn" style="font-size:20px;padding:10px 20px;">Open checkout</button>
+<p id="status">initializing</p>
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var txn = params.get("txn") || params.get("_ptxn");
+  document.getElementById("txnLabel").textContent = txn || "none";
+  Paddle.Environment.set("sandbox");
+  Paddle.Initialize({ token: "test_89160b02d35ab8e12814ae2a2f9",
+    eventCallback: function(ev) { document.getElementById("status").textContent = "event: " + ev.name; } });
+  function openCheckout() {
+    if (!txn) { document.getElementById("status").textContent = "no txn param"; return; }
+    Paddle.Checkout.open({ transactionId: txn, settings: { displayMode: "overlay", locale: "en" } });
+  }
+  document.getElementById("openBtn").addEventListener("click", openCheckout);
+  document.getElementById("status").textContent = "ready";
+</script>
+</body>
+</html>
